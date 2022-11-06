@@ -7,7 +7,7 @@ from typing import List
 class WordleServ:
     """Manage wordle logic, provide guess feedback."""
 
-    def __initi__(self, repo: WordsRepo):
+    def __init__(self, repo: WordsRepo):
         """Initialize wordle logic with given repo."""
         self.__repo = repo
         self.__secret_answer = self.__repo.get_random_word()
