@@ -3,9 +3,10 @@
 import requests
 import random
 import bisect
+from repository import WordsRepo
 
 
-class WordsRepo:
+class DefaultRepo(WordsRepo):
     """Keeps a list of words and manages them."""
 
     def __init__(self):

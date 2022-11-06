@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
-from Logic.repository import WordsRepo
+from Repository.default_repo import DefaultRepo
 
-repo = WordsRepo()
+repo = DefaultRepo()
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
