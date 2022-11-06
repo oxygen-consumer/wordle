@@ -10,7 +10,14 @@ class WordleServ:
     def __init__(self, repo: WordsRepo):
         """Initialize wordle logic with given repo."""
         self.__repo = repo
-        self.__secret_answer = self.__repo.get_random_word()
+
+    def __refresh_word(self):
+        # Try to get a new word from repo and set no_more_words accordingly
+        try:
+            self.__secret_answer = self.__repo.get_random_word()
+            self.no_more_words = False
+        except IndexError():
+            self.no_more_words = True
 
     def check_guess(self, word: str) -> List[int]:
         """
@@ -23,7 +30,38 @@ class WordleServ:
         """
         # FIXME: maybe should make a class for the guess which also should use
         # enum
-        #
-        # TODO: implement this
 
-        pass
+        freq = [0] * 26
+        ans = [0] * 5
+
+        # Get frquency of letters in the secret quess
+        for char in self.__secret_answer:
+            freq[ord(char) - ord('A')] += 1
+
+        # Check for green letters and remove them from freq
+        for i in range(5):
+            if word[i] == self.__secret_answer[i]:
+                freq[ord(word[i]) - ord('A')] -= 1
+                ans[i] = 2
+
+        # Check for yellow letters
+        for i in range(5):
+            if ans[i] == 2:
+                continue
+            char = ord(word[i]) - ord('A')
+            if freq[char] != 0:
+                ans[i] = 1
+                freq[char] -= 1
+
+        # Check if the whole word is green
+        ok = True
+        for i in range(5):
+            if ans[i] != 2:
+                ok = False
+                break
+
+        # Get new word if it was guessed correctly
+        if ok:
+            self.__refresh_word()
+
+        return ans
