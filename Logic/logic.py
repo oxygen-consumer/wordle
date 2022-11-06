@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Wordle game service."""
 from Repository.repository import WordsRepo
-from typing import List
 from Domain.guess_entity import Guess, LetterColour
+
 
 class WordleServ:
     """Manage wordle logic, provide guess feedback."""
@@ -25,7 +25,6 @@ class WordleServ:
 
         Returns a guess entity (see guess_entity from Domain for details).
         """
-
         freq = [0] * 26
         ans = [LetterColour.GRAY] * 5
 
