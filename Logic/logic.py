@@ -2,7 +2,7 @@
 """Wordle game service."""
 from Repository.repository import WordsRepo
 from typing import List
-
+from Domain.guess_entity import Guess, LetterColour
 
 class WordleServ:
     """Manage wordle logic, provide guess feedback."""
@@ -19,20 +19,15 @@ class WordleServ:
         except IndexError():
             self.no_more_words = True
 
-    def check_guess(self, word: str) -> List[int]:
+    def check_guess(self, word: str) -> Guess:
         """
         Provide guess feedback.
 
-        Returns a list of 5 integers representing each letter like so:
-        0 - letter not present in the secret word
-        1 - letter present in the secret word but not in the current position
-        2 - letter guessed correctly
+        Returns a guess entity (see guess_entity from Domain for details).
         """
-        # FIXME: maybe should make a class for the guess which also should use
-        # enum
 
         freq = [0] * 26
-        ans = [0] * 5
+        ans = [LetterColour.GRAY] * 5
 
         # Get frequency of letters in the secret guess
         for char in self.__secret_answer:
@@ -42,22 +37,23 @@ class WordleServ:
         for i in range(5):
             if word[i] == self.__secret_answer[i]:
                 freq[ord(word[i]) - ord('A')] -= 1
-                ans[i] = 2
+                ans[i] = LetterColour.GREEN
 
         # Check for yellow letters
         for i in range(5):
-            if ans[i] == 2:
+            if ans[i] == LetterColour.GREEN:
                 continue
             char = ord(word[i]) - ord('A')
             if freq[char] != 0:
-                ans[i] = 1
+                ans[i] = LetterColour.YELLOW
                 freq[char] -= 1
 
         # Check if the whole word is green, and get a new word in that case
         for i in range(5):
-            if ans[i] != 2:
+            if ans[i] != LetterColour.GREEN:
                 break
         else:
             self.__refresh_word()
 
-        return ans
+        feedback = Guess(ans)
+        return feedback
