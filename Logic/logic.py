@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Wordle game service."""
-from repository import WordsRepo
+from Repository.repository import WordsRepo
 from typing import List
 
 
@@ -34,7 +34,7 @@ class WordleServ:
         freq = [0] * 26
         ans = [0] * 5
 
-        # Get frquency of letters in the secret quess
+        # Get frequency of letters in the secret guess
         for char in self.__secret_answer:
             freq[ord(char) - ord('A')] += 1
 
@@ -53,15 +53,11 @@ class WordleServ:
                 ans[i] = 1
                 freq[char] -= 1
 
-        # Check if the whole word is green
-        ok = True
+        # Check if the whole word is green, and get a new word in that case
         for i in range(5):
             if ans[i] != 2:
-                ok = False
                 break
-
-        # Get new word if it was guessed correctly
-        if ok:
+        else:
             self.__refresh_word()
 
         return ans
