@@ -2,6 +2,7 @@ from enum import Enum
 from dataclasses import dataclass
 from typing import List
 
+
 class LetterColour(Enum):
     """
     Represents the colours of the letters in the guess:
@@ -13,6 +14,7 @@ class LetterColour(Enum):
     GRAY = 0
     YELLOW = 1
     GREEN = 2
+
 
 @dataclass
 class Guess:
