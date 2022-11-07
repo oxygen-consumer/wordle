@@ -10,6 +10,7 @@ class WordleServ:
     def __init__(self, repo: WordsRepo):
         """Initialize wordle logic with given repo."""
         self.__repo = repo
+        self.__refresh_word()
 
     def __refresh_word(self):
         # Try to get a new word from repo and set no_more_words accordingly
