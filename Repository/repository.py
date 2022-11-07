@@ -3,7 +3,7 @@
 import abc
 
 
-class WordsRepo(abc.ABC):
+class WordsRepo(metaclass=abc.ABCMeta):
     """Repository interface. Should not follow CRUD."""
 
     @abc.abstractmethod
