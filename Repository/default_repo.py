@@ -3,7 +3,7 @@
 import requests
 import random
 import bisect
-from repository import WordsRepo
+from Repository.repository import WordsRepo
 
 
 class DefaultRepo(WordsRepo):
