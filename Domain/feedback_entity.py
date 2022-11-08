@@ -21,7 +21,16 @@ class LetterColour(Enum):
 
 @dataclass
 class Feedback:
-    """Store the feedback of a guess represented by a list of colours."""
+    """
+    Store the feedback returned by the game logic.
+
+    * colors: this stores the feedback of the guess based on letter colors;
+    * no_more_words: this is set to True when the game has used all the words
+    from repository aka player guessed all the words;
+    * current_scores: this represents the number of tries for the current word;
+    * average_score: this represents the average number of tries for the
+    previous words until the word was guessed.
+    """
 
     colors: List[LetterColour]
     no_more_words: bool
