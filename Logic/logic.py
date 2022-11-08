@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Wordle game service."""
 from Repository.repository import WordsRepo
-from Domain.guess_entity import Guess, LetterColour
+from Domain.feedback_entity import Feedback, LetterColour
 
 
 class WordleServ:
@@ -10,17 +10,43 @@ class WordleServ:
     def __init__(self, repo: WordsRepo):
         """Initialize wordle logic with given repo."""
         self.__repo = repo
+        self.__init_score()
         self.__refresh_word()
+
+    def __init_score(self):
+        self.__current_score = 0
+        self.__avg_score = 0.0
+        self.__previous_plays = 0
+
+    def __update_score(self, reset=False):
+        """
+        Update score variables.
+
+        If reset is set to True, then set the current score to 0 and
+        recalculate average score.
+        """
+        if reset:
+            self.__avg_score = self.__avg_score   \
+                - self.__avg_score / (self.__previous_plays + 1)   \
+                + self.__current_score / (self.__previous_plays + 1)
+
+            self.__current_score = 0
+            self.__previous_plays += 1
+        else:
+            self.__current_score += 1
 
     def __refresh_word(self):
         # Try to get a new word from repo and set no_more_words accordingly
         try:
             self.__secret_answer = self.__repo.get_random_word()
-            self.no_more_words = False
+            self.__no_more_words = False
         except IndexError():
-            self.no_more_words = True
+            self.__no_more_words = True
 
-    def check_guess(self, word: str) -> Guess:
+        # Reset current score and update average score
+        self.__update_score(True)
+
+    def check_guess(self, word: str) -> Feedback:
         """
         Provide guess feedback.
 
@@ -28,6 +54,9 @@ class WordleServ:
         """
         freq = [0] * 26
         ans = [LetterColour.GRAY] * 5
+
+        # Increase current score
+        self.__update_score()
 
         # Get frequency of letters in the secret guess
         for char in self.__secret_answer:
@@ -55,5 +84,10 @@ class WordleServ:
         else:
             self.__refresh_word()
 
-        feedback = Guess(ans)
+        # Construct the feedback entity and return it
+        feedback = Feedback()
+        feedback.colors = ans
+        feedback.no_more_words = self.__no_more_words
+        feedback.current_score = self.__current_score
+        feedback.average_score = self.__avg_score
         return feedback
