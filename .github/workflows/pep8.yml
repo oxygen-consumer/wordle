@@ -2,7 +2,7 @@ name: Format python code
 on: push
 jobs:
   autopep8:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
       - name: autopep8
