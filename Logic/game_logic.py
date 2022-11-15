@@ -13,6 +13,11 @@ class WordleServ:
         self.__buggy = buggy
         self.__init_score()
         self.__refresh_word()
+        # HACK:
+        # reset previous_plays after initial refresh_word call
+        # which calls update_score and increases the play count to 1
+        # when it should be 0, since it's the first game
+        self.__previous_plays = 0
 
     def __init_score(self):
         self.__current_score = 0
@@ -27,7 +32,6 @@ class WordleServ:
         recalculate average score.
         """
         if reset:
-            # FIXME: this is wrong, I can't math
             self.__avg_score = (
                 self.__avg_score
                 - self.__avg_score / (self.__previous_plays + 1)
