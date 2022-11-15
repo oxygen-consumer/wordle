@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """UI interface."""
 import abc
+
 from Logic.game_logic import WordleServ
+
 from Controller.bot_handler import BotHandler
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Define helper classes to provide a more organized feedback from service."""
-from enum import Enum
 from dataclasses import dataclass
+from enum import Enum
 from typing import List
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-from Repository.default_repo import DefaultRepo
-from Logic.game_logic import WordleServ
 from Controller.cli_ui import CLI
+from Logic.game_logic import WordleServ
+from Repository.default_repo import DefaultRepo
 
 repo = DefaultRepo()
 serv = WordleServ(repo)

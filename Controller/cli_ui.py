@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Simple CLI UI."""
-from Controller.ui_interface import UIInterface
-from Controller.bot_handler import BotHandler
-from Logic.game_logic import WordleServ
-from Domain.feedback_entity import Feedback, LetterColour
 import colorama
+from Domain.feedback_entity import Feedback, LetterColour
+from Logic.game_logic import WordleServ
+
+from Controller.bot_handler import BotHandler
+from Controller.ui_interface import UIInterface
 
 
 class CLI(UIInterface):

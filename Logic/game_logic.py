@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Wordle game service."""
-from Repository.repository import WordsRepo
 from Domain.feedback_entity import Feedback, LetterColour
+from Repository.repository import WordsRepo
 
 
 class WordleServ:

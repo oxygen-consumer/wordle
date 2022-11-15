@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Defines the class for words repo."""
-import requests
-import random
 import bisect
+import random
+
+import requests
+
 from Repository.repository import WordsRepo
 
 
