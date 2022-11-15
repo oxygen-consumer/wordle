@@ -7,9 +7,10 @@ from Repository.repository import WordsRepo
 class WordleServ:
     """Manage wordle logic, provide guess feedback."""
 
-    def __init__(self, repo: WordsRepo):
+    def __init__(self, repo: WordsRepo, buggy: bool = True):
         """Initialize wordle logic with given repo."""
         self.__repo = repo
+        self.__buggy = buggy
         self.__init_score()
         self.__refresh_word()
 
@@ -26,6 +27,7 @@ class WordleServ:
         recalculate average score.
         """
         if reset:
+            # FIXME: this is wrong, I can't math
             self.__avg_score = (
                 self.__avg_score
                 - self.__avg_score / (self.__previous_plays + 1)
@@ -51,21 +53,9 @@ class WordleServ:
         # FIXME: delete this, used for debug
         print("The secret word is:", self.__secret_answer)
 
-    def check_guess(self, word: str) -> Feedback:
-        """
-        Provide guess feedback.
-
-        Returns a guess entity (see guess_entity from Domain for details).
-        """
-        if not self.__repo.check_word(word):
-            raise ValueError("Not a word.")
-
-        # FIXME: should implement buggy behaviour
+    def __buggy_free_behaviour(self, word: str) -> list[LetterColour]:
         freq = [0] * 26
         ans = [LetterColour.GRAY] * 5
-
-        # Increase current score
-        self.__update_score()
 
         # Get frequency of letters in the secret guess
         for char in self.__secret_answer:
@@ -85,6 +75,39 @@ class WordleServ:
             if freq[char] != 0:
                 ans[i] = LetterColour.YELLOW
                 freq[char] -= 1
+
+        return ans
+
+    def __buggy_behaviour(self, word: str) -> list[LetterColour]:
+        ans = [LetterColour.GRAY] * 5
+
+        for i in range(5):
+            if word[i] == self.__secret_answer[i]:
+                ans[i] = LetterColour.GREEN
+            elif word[i] in self.__secret_answer:
+                ans[i] = LetterColour.YELLOW
+
+        return ans
+
+    def check_guess(self, word: str) -> Feedback:
+        """
+        Provide guess feedback.
+
+        Returns a guess entity (see guess_entity from Domain for details).
+        """
+        # Check if a word is present in the repo
+        if not self.__repo.check_word(word):
+            raise ValueError("Not a word.")
+
+        # Increase current score
+        self.__update_score()
+
+        # Get the answer based on the given behaviour
+        ans = []
+        if self.__buggy:
+            ans = self.__buggy_behaviour(word)
+        else:
+            ans = self.__buggy_free_behaviour(word)
 
         # Check if the whole word is green, and get a new word in that case
         for i in range(5):
