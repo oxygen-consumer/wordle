@@ -46,12 +46,19 @@ class WordleServ:
         # Reset current score and update average score
         self.__update_score(True)
 
+        # FIXME: delete this, used for debug
+        print("The secret word is:", self.__secret_answer)
+
     def check_guess(self, word: str) -> Feedback:
         """
         Provide guess feedback.
 
         Returns a guess entity (see guess_entity from Domain for details).
         """
+        if not self.__repo.check_word(word):
+            raise ValueError("Not a word.")
+
+        # FIXME: should implement buggy behaviour
         freq = [0] * 26
         ans = [LetterColour.GRAY] * 5
 
@@ -85,9 +92,5 @@ class WordleServ:
             self.__refresh_word()
 
         # Construct the feedback entity and return it
-        feedback = Feedback()
-        feedback.colors = ans
-        feedback.no_more_words = self.__no_more_words
-        feedback.current_score = self.__current_score
-        feedback.average_score = self.__avg_score
+        feedback = Feedback(ans, word, self.__no_more_words, self.__avg_score)
         return feedback
