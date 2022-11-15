@@ -22,7 +22,7 @@ class CLI(UIInterface):
         colors = {
             LetterColour.GRAY: colorama.Back.BLACK,
             LetterColour.YELLOW: colorama.Back.YELLOW,
-            LetterColour.GREEN: colorama.Back.GREEN
+            LetterColour.GREEN: colorama.Back.GREEN,
         }
 
         for letter, color in zip(feedback.guess, feedback.colors):

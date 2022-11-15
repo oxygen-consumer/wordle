@@ -26,9 +26,11 @@ class WordleServ:
         recalculate average score.
         """
         if reset:
-            self.__avg_score = self.__avg_score   \
-                - self.__avg_score / (self.__previous_plays + 1)   \
+            self.__avg_score = (
+                self.__avg_score
+                - self.__avg_score / (self.__previous_plays + 1)
                 + self.__current_score / (self.__previous_plays + 1)
+            )
 
             self.__current_score = 0
             self.__previous_plays += 1
@@ -67,19 +69,19 @@ class WordleServ:
 
         # Get frequency of letters in the secret guess
         for char in self.__secret_answer:
-            freq[ord(char) - ord('A')] += 1
+            freq[ord(char) - ord("A")] += 1
 
         # Check for green letters and remove them from freq
         for i in range(5):
             if word[i] == self.__secret_answer[i]:
-                freq[ord(word[i]) - ord('A')] -= 1
+                freq[ord(word[i]) - ord("A")] -= 1
                 ans[i] = LetterColour.GREEN
 
         # Check for yellow letters
         for i in range(5):
             if ans[i] == LetterColour.GREEN:
                 continue
-            char = ord(word[i]) - ord('A')
+            char = ord(word[i]) - ord("A")
             if freq[char] != 0:
                 ans[i] = LetterColour.YELLOW
                 freq[char] -= 1
