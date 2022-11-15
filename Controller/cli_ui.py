@@ -31,7 +31,8 @@ class CLI(UIInterface):
         self.__current_score += 1
 
         if feedback.colors == [LetterColour.GREEN] * 5:
-            print(f"Guessed in {self.__current_score} guesses")
+            print(f"Guessed in {self.__current_score} guesses.")
+            print(f"Average score: {feedback.average_score}.")
             self.__current_score = 0
 
     def __try_guess(self, guess: str) -> Feedback:
@@ -68,3 +69,7 @@ class CLI(UIInterface):
                 continue
 
             self.__process_feedback(feedback)
+
+            if feedback.no_more_words:
+                print("Congrats chad. You guessed all the words.")
+                break
