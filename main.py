@@ -9,6 +9,7 @@ ui = CLI(serv)
 
 
 def main():
+    # TODO: we should define some arguments to change programs behaviour
     ui.run_ui()
 
 

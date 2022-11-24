@@ -48,7 +48,7 @@ class WordleServ:
         try:
             self.__secret_answer = self.__repo.get_random_word()
             self.__no_more_words = False
-        except IndexError():
+        except IndexError:
             self.__no_more_words = True
 
         # Reset current score and update average score

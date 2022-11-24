@@ -3,9 +3,11 @@
 *.log
 tmp/
 .projectile
+.vscode
 
 *.py[cod]
 *.egg
 build
 htmlcov
 Pipfile
+.venv
