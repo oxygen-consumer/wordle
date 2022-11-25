@@ -1,8 +1,13 @@
 from multiprocessing import Queue
 from Domain.feedback_entity import LetterColour
 
+
 class WordleSolver:
-    def __init__(self, word_list: list[str], guess_queue: Queue, feedback_queue: Queue) -> None:
+    def __init__(
+            self,
+            word_list: list[str],
+            guess_queue: Queue,
+            feedback_queue: Queue) -> None:
         self.__words = word_list
         self.__guess_queue = guess_queue
         self.__feedback_queue = feedback_queue
@@ -14,7 +19,7 @@ class WordleSolver:
     def runner(self) -> None:
         """
         Run the bot and does input/ouptut on the provided queues.
-        
+
         This function should be a subprocess!!!
         """
         while True:
