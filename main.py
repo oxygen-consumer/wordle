@@ -6,9 +6,9 @@ from Controller.bot_handler import BotHandler
 
 repo = DefaultRepo()
 serv = WordleServ(repo)
-# bot_handler = BotHandler(repo)
-# ui = CLI(serv, bot_handler)
-ui = CLI(serv)
+bot_handler = BotHandler(repo)
+ui = CLI(serv, bot_handler)
+# ui = CLI(serv)
 
 
 def main():
