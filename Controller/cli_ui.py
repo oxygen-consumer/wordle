@@ -11,7 +11,7 @@ from Controller.ui_interface import UIInterface
 class CLI(UIInterface):
     """Simple CLI UI."""
 
-    def __init__(self, service: WordleServ, bot_handler: BotHandler = None): # type: ignore
+    def __init__(self, service: WordleServ, bot_handler: BotHandler = None):  # type: ignore
         """Define default constructor."""
         self.__service = service
         self.__bot_handler = bot_handler
