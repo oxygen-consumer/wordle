@@ -4,6 +4,7 @@ from Logic.game_logic import WordleServ
 from Repository.default_repo import DefaultRepo
 from Controller.bot_handler import BotHandler
 
+
 def main():
     # TODO: we should define some arguments to change programs behaviour
     repo = DefaultRepo()
