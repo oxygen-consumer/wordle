@@ -38,7 +38,8 @@ class WordleSolver:
                 fr[key] = 1
 
         for key in fr.keys():
-            entropy += fr[key] * math.log2(len(self.__possible_answers) / fr[key])
+            entropy += fr[key] * \
+                math.log2(len(self.__possible_answers) / fr[key])
 
         entropy /= len(self.__possible_answers)
         return entropy
@@ -49,7 +50,7 @@ class WordleSolver:
 
         for word in self.__possible_answers:
             entropy = self.__entropy(word)
-            
+
             if entropy > max_entropy:
                 max_entropy = entropy
                 ans = word
