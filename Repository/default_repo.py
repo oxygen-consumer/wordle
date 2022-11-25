@@ -19,7 +19,10 @@ class DefaultRepo(WordsRepo):
         self.__current_word = 0
 
     def __load_repo(self):
+        # HACK: the request returns the words in a sorted order
+        # should we sort it just in case?
         r = requests.get(self.__url)
+        # there is an empty line at the end so we remove it by :-1
         self.__sorted_data = r.text.splitlines()[:-1]
 
         # __data should always be shuffled, see get_random_word
@@ -44,3 +47,7 @@ class DefaultRepo(WordsRepo):
         if i != len(self.__sorted_data) and self.__sorted_data[i] == word:
             return True
         return False
+
+    def get_words_list(self) -> list[str]:
+        """Return a sorted list of all the possible words."""
+        return self.__sorted_data

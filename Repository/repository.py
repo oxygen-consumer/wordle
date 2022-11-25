@@ -15,3 +15,8 @@ class WordsRepo(metaclass=abc.ABCMeta):
     def check_word(self, word: str) -> bool:
         """Return true if the word is found in the repo, false otherwise."""
         ...
+
+    @abc.abstractmethod
+    def get_words_list(self) -> list[str]:
+        """Return a sorted list of all the possible words."""
+        ...
