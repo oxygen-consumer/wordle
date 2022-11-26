@@ -1,15 +1,17 @@
 from multiprocessing import Queue
 from Domain.feedback_entity import LetterColour
 import math
+
 # TODO: document this junk
 
 
 class WordleSolver:
     def __init__(
-            self,
-            word_list: list[str],
-            guess_queue: Queue,
-            feedback_queue: Queue) -> None:
+        self,
+        word_list: list[str],
+        guess_queue: Queue,
+        feedback_queue: Queue,
+    ) -> None:
         self.__words = word_list
         self.__guess_queue = guess_queue
         self.__feedback_queue = feedback_queue
@@ -38,8 +40,9 @@ class WordleSolver:
                 fr[key] = 1
 
         for key in fr.keys():
-            entropy += fr[key] * \
-                math.log2(len(self.__possible_answers) / fr[key])
+            entropy += fr[key] * math.log2(
+                len(self.__possible_answers) / fr[key]
+            )
 
         entropy /= len(self.__possible_answers)
         return entropy
@@ -67,7 +70,10 @@ class WordleSolver:
                     return False
 
             elif color == LetterColour.YELLOW:
-                if not self.__previous_word[i] in word or self.__previous_word[i] == word[i]:
+                if (
+                    not self.__previous_word[i] in word
+                    or self.__previous_word[i] == word[i]
+                ):
                     return False
 
             else:

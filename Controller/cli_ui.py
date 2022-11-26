@@ -11,7 +11,7 @@ from Controller.ui_interface import UIInterface
 class CLI(UIInterface):
     """Simple CLI UI."""
 
-    def __init__(self, service: WordleServ, bot_handler: BotHandler = None):  # type: ignore
+    def __init__(self, service: WordleServ, bot_handler: BotHandler):
         """Define default constructor."""
         self.__service = service
         self.__bot_handler = bot_handler
@@ -43,28 +43,14 @@ class CLI(UIInterface):
         return self.__service.check_guess(guess)
 
     def __get_input(self) -> str:
-        if self.__bot_handler is None:
-            return input("Enter your guess: ").upper()
-        else:
-            return self.__bot_handler.get_bot_guess()
+        return self.__bot_handler.get_bot_guess()
 
     def run_ui(self):
         """Run the UI."""
-        print("Welcome! To give up type exit anytime.")
-
         while True:
             guess = self.__get_input()
 
-            if guess == "EXIT":
-                print("Noob")
-                break
-
-            if len(guess) != 5:
-                print("The guess must be a 5 letter word!")
-                continue
-
             feedback = Feedback
-
             try:
                 feedback = self.__try_guess(guess)
             except ValueError:
@@ -74,7 +60,5 @@ class CLI(UIInterface):
             self.__process_feedback(feedback)
 
             if feedback.no_more_words:
-                print("Congrats chad. You guessed all the words.")
-                if self.__bot_handler is not None:
-                    self.__bot_handler.stop_bot()
+                self.__bot_handler.stop_bot()
                 break

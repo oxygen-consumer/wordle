@@ -11,7 +11,7 @@ class UIInterface(metaclass=abc.ABCMeta):
     """UI Interface."""
 
     @abc.abstractmethod
-    def __init__(self, service: WordleServ, bot_handler: BotHandler = None):  # type: ignore
+    def __init__(self, service: WordleServ, bot_handler: BotHandler):
         """Define default constructor."""
         self.__service = service
         self.__bot_handler = bot_handler

@@ -54,9 +54,6 @@ class WordleServ:
         # Reset current score and update average score
         self.__update_score(True)
 
-        # FIXME: delete this, used for debug
-        print("The secret word is:", self.__secret_answer)
-
     def __buggy_free_behaviour(self, word: str) -> list[LetterColour]:
         freq = [0] * 26
         ans = [LetterColour.GRAY] * 5
