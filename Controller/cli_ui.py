@@ -36,8 +36,7 @@ class CLI(UIInterface):
             print(f"Average score: {feedback.average_score}.")
             self.__current_score = 0
 
-        if self.__bot_handler is not None:
-            self.__bot_handler.give_feedback_to_bot(feedback.colors)
+        self.__bot_handler.give_feedback_to_bot(feedback.colors)
 
     def __try_guess(self, guess: str) -> Feedback:
         return self.__service.check_guess(guess)
