@@ -17,7 +17,7 @@ def main():
     serv = WordleServ(repo)
     # TODO: GUI, CLI should be used when --cli is passed
     ui = CLI(serv, bot_handler)
-    
+
     print("Finisihed loading... Running...")
     start_time = time.perf_counter()
     ui.run_ui()
