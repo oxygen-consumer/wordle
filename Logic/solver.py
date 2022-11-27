@@ -6,6 +6,7 @@ import math
 
 
 class WordleSolver:
+    """Create the solver and get the word list and connect with the queues from the IPC"""
     def __init__(
         self,
         word_list: list[str],
@@ -17,6 +18,7 @@ class WordleSolver:
         self.__feedback_queue = feedback_queue
 
     def __gen_key(self, word: str, possible_ans: str) -> str:
+        """Generates the key for the dictionary, the key being the feedback we would get if the secret word were possible_ans"""
         case = ["0"] * 5
 
         for i, c in enumerate(word):
@@ -28,6 +30,7 @@ class WordleSolver:
         return "".join(case)
 
     def __entropy(self, word: str) -> float:
+        """Calculates the entropy of a word in __possible_answers"""
         entropy = 0.0
         fr = dict()
 
@@ -48,6 +51,7 @@ class WordleSolver:
         return entropy
 
     def __get_best_entropy(self) -> str:
+        """Gets the word with the biggest entropy from the __possible_answers"""
         max_entropy = -1
         ans = ""
 
@@ -61,6 +65,7 @@ class WordleSolver:
         return ans
 
     def __check_match(self, word) -> bool:
+        """Checks if the new guess matches the requirements from the feedback"""
         if self.__previous_word == word:
             return False
 
@@ -83,6 +88,7 @@ class WordleSolver:
         return True
 
     def __clean_possible_answers(self) -> None:
+        """Get rid of the words that cannot be the correct answer"""
         new_pos_ans = set()
         for word in self.__possible_answers:
             if self.__check_match(word):
