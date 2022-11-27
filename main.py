@@ -9,6 +9,13 @@ import argparse
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Wordle Bot")
+    parser.add_argument(
+        "--gui",
+        action="store_true",
+        dest='gui')
+    parsed_args = parser.parse_args()
+
     print("Downloading word list...")
     repo = DefaultRepo()
 
@@ -17,13 +24,6 @@ def main():
 
     print("Initializing game...")
     serv = WordleServ(repo)
-
-    parser = argparse.ArgumentParser(description="Wordle Bot")
-    parser.add_argument(
-        "--gui",
-        action="store_true",
-        dest='gui')
-    parsed_args = parser.parse_args()
 
     if parsed_args.gui:
         ui = GUI(serv, bot_handler)
