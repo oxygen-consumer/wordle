@@ -109,6 +109,15 @@ class WordleSolver:
         """Process the provided feedback and return a new guess."""
         if self.__current_feedback == [LetterColour.GREEN] * 5:
             self.__possible_answers = set(self.__words)
+
+            # HACK:
+            # we found out that "TAREI" is the best word in the default repo
+            # so we hardcoded it to save some running time (from 6h to 10m).
+
+            # FIXME:
+            # this behaviour should be changed to make the bot compatible with
+            # other custom word lists, maybe we should determine it when the
+            # bot starts.
             self.__previous_word = "TAREI"
         else:
             self.__clean_possible_answers()
