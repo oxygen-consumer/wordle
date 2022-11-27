@@ -11,15 +11,13 @@ class WordleServ:
         """Initialize wordle logic with given repo."""
         self.__repo = repo
         self.__buggy = buggy
-        self.__init_score()
-        self.__refresh_word()
-        # HACK:
-        # reset previous_plays after initial refresh_word call
-        # which calls update_score and increases the play count to 1
-        # when it should be 0, since it's the first game
-        self.__previous_plays = 0
+        self.__init_private_data()
 
-    def __init_score(self):
+    def __init_private_data(self):
+        self.__secret_answer = self.__repo.get_random_word()
+        self.__guess_rates = dict()
+        self.__no_more_words = False
+
         self.__current_score = 0
         self.__avg_score = 0.0
         self.__previous_plays = 0
@@ -43,13 +41,22 @@ class WordleServ:
         else:
             self.__current_score += 1
 
+    def __gen_guess_rates_file(self):
+        file = open("guess_rates.txt", "w")
+        
+        for guess in sorted(self.__guess_rates):
+            file.write(f"{guess}: {self.__guess_rates[guess]}\n")
+
+        file.close()
+
     def __refresh_word(self):
         # Try to get a new word from repo and set no_more_words accordingly
+        self.__guess_rates[self.__secret_answer] = self.__current_score
         try:
             self.__secret_answer = self.__repo.get_random_word()
-            self.__no_more_words = False
         except IndexError:
             self.__no_more_words = True
+            self.__gen_guess_rates_file()
 
         # Reset current score and update average score
         self.__update_score(True)

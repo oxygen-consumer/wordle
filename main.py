@@ -34,7 +34,7 @@ def main():
     start_time = time.perf_counter()
     ui.run_ui()
     end_time = time.perf_counter()
-    print(f"Finished guessing all the words in {end_time - start_time}.")
+    print(f"Finished guessing all the words in {end_time - start_time}s.")
 
 
 if __name__ == "__main__":
