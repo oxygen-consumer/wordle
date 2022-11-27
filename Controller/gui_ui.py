@@ -9,6 +9,7 @@ import pygame.freetype
 class GUI(UIInterface):
     def __init__(self, service: WordleServ):
         """Define default constructor."""
+        self.__not_a_word = None
         self.__service = service
         self.__current_score = 0
         self.__average_score = 0.0
@@ -29,6 +30,7 @@ class GUI(UIInterface):
             LetterColour.YELLOW: "#c8b653",
             LetterColour.GREEN: "#6ca965",
             "WHITE": "#ffffff",
+            "RED":  "#e35b52"
         }
         self.__font = pygame.freetype.SysFont("Lucida Console", 64, bold=True)
         self.__score_font = pygame.freetype.SysFont("Lucida Console", 20)
@@ -37,6 +39,7 @@ class GUI(UIInterface):
         self.__start_rect_y = 80
         self.__print_from_line = 0
         self.__game_finished = False
+        self.__not_a_word = False
 
     def __show_board(self):
         self.__screen.fill((50, 50, 50))
@@ -78,6 +81,8 @@ class GUI(UIInterface):
             x = self.__start_rect_x + (self.__square_size + 10) * column
             y = self.__start_rect_y + (self.__square_size + 10) * current_row
             square.topleft = (x, y)
+            if self.__not_a_word:
+                pygame.draw.rect(self.__screen, self.__colors['RED'], square)
             text_surface, text_rect = self.__font.render(
                 char, self.__colors['WHITE'])
             text_rect.center = (x + 40, y + 40)
@@ -149,10 +154,11 @@ class GUI(UIInterface):
                                     self.__current_word)
                                 self.__process_feedback(feedback)
                             except ValueError:
-                                pass
+                                self.__not_a_word = True
 
                     # deleting characters with backspace
                     elif event.key == pygame.K_BACKSPACE:
+                        self.__not_a_word = False
                         if len(self.__current_word) > 0:
                             self.__current_word = self.__current_word[:-1]
 
@@ -167,6 +173,7 @@ class GUI(UIInterface):
                     # scrolling with up/down arrow keys
                     elif not self.__game_finished \
                             and len(self.__current_word) != 5:
+                        self.__not_a_word = False
                         char = event.unicode.upper()
                         if char.isalpha():
                             self.__current_word += char
