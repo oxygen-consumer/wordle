@@ -43,7 +43,7 @@ class WordleServ:
 
     def __gen_guess_rates_file(self):
         file = open("guess_rates.txt", "w")
-        
+
         for guess in sorted(self.__guess_rates):
             file.write(f"{guess}: {self.__guess_rates[guess]}\n")
 
