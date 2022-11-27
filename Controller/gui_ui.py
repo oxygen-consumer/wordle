@@ -114,6 +114,7 @@ class GUI(UIInterface):
                 clock.tick(30)
                 if event.type == pygame.QUIT:
                     running = False
+                    pygame.quit()
                     break
 
                 self.__show_board()
