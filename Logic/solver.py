@@ -26,7 +26,7 @@ class WordleSolver:
         """
         case = ["0"] * 5
         # We have a convention, that if a letter is GREEN in feedfback, it is
-        # represented by 2, if it is YELLOW, it is represented by 1, and 
+        # represented by 2, if it is YELLOW, it is represented by 1, and
         # 0 means that the letter isn't in the word
         for i, c in enumerate(word):
             if c == possible_ans[i]:
@@ -79,16 +79,18 @@ class WordleSolver:
         """
         Checks if the new guess matches the requirements from the feedback.
         """
-        
+
         # Making sure we are not choosing the same word again
         if self.__previous_word == word:
             return False
-        # Choosing the words that contain the GREEN letters in the same position as in feedback
+        # Choosing the words that contain the GREEN letters in the same
+        # position as in feedback
         for i, color in enumerate(self.__current_feedback):
             if color == LetterColour.GREEN:
                 if word[i] != self.__previous_word[i]:
                     return False
-            # Checking if the YELLOW letter is in the new word and it isn't in the same position
+            # Checking if the YELLOW letter is in the new word and it isn't in
+            # the same position
             elif color == LetterColour.YELLOW:
                 if (
                     not self.__previous_word[i] in word
@@ -104,7 +106,8 @@ class WordleSolver:
 
     def __clean_possible_answers(self) -> None:
         """Get rid of the words that cannot be the correct answer"""
-        # We are creating a set for the new possible answers, because it is more efficient
+        # We are creating a set for the new possible answers, because it is
+        # more efficient
         new_pos_ans = set()
         for word in self.__possible_answers:
             if self.__check_match(word):
