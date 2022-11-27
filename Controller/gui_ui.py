@@ -1,19 +1,17 @@
 from Domain.feedback_entity import Feedback, LetterColour
 from Logic.game_logic import WordleServ
 
-from Controller.bot_handler import BotHandler
 from Controller.ui_interface import UIInterface
 import pygame
 import pygame.freetype
-import time
 
 
 class GUI(UIInterface):
-    def __init__(self, service: WordleServ, bot_handler: BotHandler):
+    def __init__(self, service: WordleServ):
         """Define default constructor."""
         self.__service = service
-        self.__bot_handler = bot_handler
         self.__current_score = 0
+        self.__average_score = 0.0
         self.__guess_list = []
         self.__init_window()
         self.__init_game_settings()
@@ -32,11 +30,13 @@ class GUI(UIInterface):
             LetterColour.GREEN: "#6ca965",
             "WHITE": "#ffffff",
         }
-        self.__font = pygame.freetype.SysFont("Arial", 64, bold=True)
-        self.__score_font = pygame.freetype.SysFont("Arial", 28)
+        self.__font = pygame.freetype.SysFont("Lucida Console", 64, bold=True)
+        self.__score_font = pygame.freetype.SysFont("Lucida Console", 20)
         self.__square_size = 80
         self.__start_rect_x = 80
         self.__start_rect_y = 80
+        self.__print_from_line = 0
+        self.__game_finished = False
 
     def __show_board(self):
         self.__screen.fill((50, 50, 50))
@@ -51,15 +51,16 @@ class GUI(UIInterface):
                 pygame.draw.rect(
                     self.__screen, self.__colors['WHITE'], square, 2)
 
-        # from what guess to start printing from (based on scrolling)
+        # from what guess to start displaying from (based on scrolling)
         if self.__current_score <= 5:
             list_to_show = self.__guess_list
-            # current_row = self.__current_score
+            current_row = self.__current_score
         else:
-            list_to_show = self.__guess_list[-6:]
-            # current_row = 5
+            list_to_show = self.__guess_list[
+                self.__print_from_line:self.__print_from_line + 5]
+            current_row = 5
 
-        # print the selected guesses
+        # show the selected guesses
         for row, feedback in enumerate(list_to_show):
             for column, (char_w, char_f) in enumerate(
                     zip(feedback.guess, feedback.colors)):
@@ -72,59 +73,101 @@ class GUI(UIInterface):
                 text_rect.center = (x + 40, y + 40)
                 self.__screen.blit(text_surface, text_rect)
 
-        # print average/current scores
-        try:
-            text_surface, text_rect = self.__score_font.render(
-                "Average score: {:.2f}".format(
-                    self.__guess_list[-1].average_score), self.__colors['WHITE'])
-            text_rect.topleft = (10, 10)
+        # show the input text
+        for column, char in enumerate(self.__current_word):
+            x = self.__start_rect_x + (self.__square_size + 10) * column
+            y = self.__start_rect_y + (self.__square_size + 10) * current_row
+            square.topleft = (x, y)
+            text_surface, text_rect = self.__font.render(
+                char, self.__colors['WHITE'])
+            text_rect.center = (x + 40, y + 40)
             self.__screen.blit(text_surface, text_rect)
-        except IndexError:
-            pass
 
+        # show average score
         text_surface, text_rect = self.__score_font.render(
-            "Current score: {:.2f}".format(
+            "Average score: {:.2f}".format(
+                self.__average_score), self.__colors['WHITE'])
+        text_rect.topleft = (10, 10)
+        self.__screen.blit(text_surface, text_rect)
+
+        # show current score
+        text_surface, text_rect = self.__score_font.render(
+            "Current score: {0}".format(
                 self.__current_score), self.__colors['WHITE'])
         text_rect.topright = (self.__width - 10, 10)
         self.__screen.blit(text_surface, text_rect)
 
     def __process_feedback(self, feedback: Feedback):
+        """Processes the given feedback"""
+        self.__current_word = ""
         self.__current_score += 1
+        self.__average_score = feedback.average_score
         self.__guess_list.append(feedback)
+
+        if self.__current_score < 5:
+            self.__print_from_line = 0
+        else:
+            self.__print_from_line = self.__current_score - 5
 
         if feedback.colors == [LetterColour.GREEN] * 5:
             print(f"Guessed in {self.__current_score} guesses.")
             print(f"Average score: {feedback.average_score}.")
-            self.__current_score = 0
-            self.__guess_list.clear()
+            self.__game_finished = True
 
-        self.__bot_handler.give_feedback_to_bot(feedback.colors)
+    def __reset_game(self):
+        """Clears screen"""
+        self.__guess_list.clear()
+        self.__current_score = 0
+        self.__print_from_line = 0
+        self.__current_word = ""
+        self.__game_finished = False
 
     def __try_guess(self, guess: str) -> Feedback:
         return self.__service.check_guess(guess)
 
-    def __handle_input(self) -> str:
-        return self.__bot_handler.get_bot_guess()
-
     def run_ui(self):
-        clock = pygame.time.Clock()
+        # clock = pygame.time.Clock()
         running = True
         while running:
             for event in pygame.event.get():
-                clock.tick(30)
+                self.__show_board()
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
                     break
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
 
-                self.__show_board()
-                guess = self.__handle_input()
-                feedback = self.__try_guess(guess)
-                self.__process_feedback(feedback)
+                        # press enter to restart game after it's finished
+                        if self.__game_finished:
+                            self.__reset_game()
 
-                if feedback.no_more_words:
-                    self.__bot_handler.stop_bot()
-                    running = False
-                    break
+                        # else, tries to submit the current word
+                        else:
+                            try:
+                                feedback = self.__try_guess(
+                                    self.__current_word)
+                                self.__process_feedback(feedback)
+                            except ValueError:
+                                pass
+
+                    # deleting characters with backspace
+                    elif event.key == pygame.K_BACKSPACE:
+                        if len(self.__current_word) > 0:
+                            self.__current_word = self.__current_word[:-1]
+
+                    # scrolling with up/down arrow keys
+                    elif event.key == pygame.K_UP:
+                        if self.__print_from_line != 0:
+                            self.__print_from_line -= 1
+                    elif event.key == pygame.K_DOWN:
+                        if self.__current_score >= 6 and self.__print_from_line != self.__current_score - 5:
+                            self.__print_from_line += 1
+
+                    # scrolling with up/down arrow keys
+                    elif not self.__game_finished \
+                            and len(self.__current_word) != 5:
+                        char = event.unicode.upper()
+                        if char.isalpha():
+                            self.__current_word += char
                 pygame.display.update()
-                pygame.time.wait(100)
