@@ -8,7 +8,7 @@ class WordleServ:
     """Manage wordle logic, provide guess feedback."""
 
     def __init__(
-        self, repo: WordsRepo, buggy: bool = True, gen_files: bool = True
+        self, repo: WordsRepo, buggy: bool = True, gen_files: bool = False
     ):
         """
         Initialize wordle logic with given repo.

@@ -25,13 +25,15 @@ class WordleSolver:
         would get if the secret word were possible_ans.
         """
         case = ["0"] * 5
-
+        # We have a convention, that if a letter is GREEN in feedfback, it is
+        # represented by 2, if it is YELLOW, it is represented by 1, and
+        # 0 means that the letter isn't in the word
         for i, c in enumerate(word):
             if c == possible_ans[i]:
                 case[i] = "2"
             elif c in possible_ans:
                 case[i] = "1"
-
+        # Return a string because it is hashable
         return "".join(case)
 
     def __entropy(self, word: str) -> float:
@@ -46,12 +48,13 @@ class WordleSolver:
                 fr[key] += 1
             else:
                 fr[key] = 1
-
+        # We are calculating the entropy using Shannon's formula
         for key in fr.keys():
             entropy += fr[key] * math.log2(
                 len(self.__possible_answers) / fr[key]
             )
-
+        # Dividing the entropy by the number of possible answers at the final
+        # insead of dividing at every iteration from above
         entropy /= len(self.__possible_answers)
         return entropy
 
@@ -61,7 +64,8 @@ class WordleSolver:
         """
         max_entropy = -1
         ans = ""
-
+        # Calculate the entropy of all possible answers, and choosing the word
+        # with the biggest entropy
         for word in self.__possible_answers:
             entropy = self.__entropy(word)
 
@@ -75,21 +79,25 @@ class WordleSolver:
         """
         Checks if the new guess matches the requirements from the feedback.
         """
+
+        # Making sure we are not choosing the same word again
         if self.__previous_word == word:
             return False
-
+        # Choosing the words that contain the GREEN letters in the same
+        # position as in feedback
         for i, color in enumerate(self.__current_feedback):
             if color == LetterColour.GREEN:
                 if word[i] != self.__previous_word[i]:
                     return False
-
+            # Checking if the YELLOW letter is in the new word and it isn't in
+            # the same position
             elif color == LetterColour.YELLOW:
                 if (
                     not self.__previous_word[i] in word
                     or self.__previous_word[i] == word[i]
                 ):
                     return False
-
+            # Checking if a GRAY letter is in the new word
             else:
                 if self.__previous_word[i] in word:
                     return False
@@ -98,6 +106,8 @@ class WordleSolver:
 
     def __clean_possible_answers(self) -> None:
         """Get rid of the words that cannot be the correct answer"""
+        # We are creating a set for the new possible answers, because it is
+        # more efficient
         new_pos_ans = set()
         for word in self.__possible_answers:
             if self.__check_match(word):
