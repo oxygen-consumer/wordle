@@ -2,11 +2,12 @@ from multiprocessing import Queue
 from Domain.feedback_entity import LetterColour
 import math
 
-# TODO: document this junk
-
 
 class WordleSolver:
-    """Creates the solver and get the word list and connect with the queues from the IPC"""
+    """
+    Creates the solver and get the word list and connect with the queues
+    from the IPC.
+    """
 
     def __init__(
         self,
@@ -19,7 +20,10 @@ class WordleSolver:
         self.__feedback_queue = feedback_queue
 
     def __gen_key(self, word: str, possible_ans: str) -> str:
-        """Generates the key for the dictionary, the key being the feedback we would get if the secret word were possible_ans"""
+        """
+        Generates the key for the dictionary, the key being the feedback we
+        would get if the secret word were possible_ans.
+        """
         case = ["0"] * 5
 
         for i, c in enumerate(word):
@@ -52,7 +56,9 @@ class WordleSolver:
         return entropy
 
     def __get_best_entropy(self) -> str:
-        """Gets the word with the biggest entropy from the __possible_answers"""
+        """
+        Gets the word with the biggest entropy from the __possible_answers.
+        """
         max_entropy = -1
         ans = ""
 
@@ -66,7 +72,9 @@ class WordleSolver:
         return ans
 
     def __check_match(self, word) -> bool:
-        """Checks if the new guess matches the requirements from the feedback"""
+        """
+        Checks if the new guess matches the requirements from the feedback.
+        """
         if self.__previous_word == word:
             return False
 
