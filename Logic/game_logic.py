@@ -7,20 +7,34 @@ from Repository.repository import WordsRepo
 class WordleServ:
     """Manage wordle logic, provide guess feedback."""
 
-    def __init__(self, repo: WordsRepo, buggy: bool = True):
-        """Initialize wordle logic with given repo."""
+    def __init__(
+        self, repo: WordsRepo, buggy: bool = True, gen_files: bool = True
+    ):
+        """
+        Initialize wordle logic with given repo.
+        
+        If buggy is set to False then the feedback will be generated with the
+        buggy free behaviour.
+        If gen_files is set to True, the files solutii.txt and guess_rates.txt
+        will be generated.
+        """
         self.__repo = repo
         self.__buggy = buggy
+        self.__gen_files = gen_files
         self.__init_private_data()
 
     def __init_private_data(self):
         self.__secret_answer = self.__repo.get_random_word()
-        self.__guess_rates = dict()
         self.__no_more_words = False
 
         self.__current_score = 0
         self.__avg_score = 0.0
         self.__previous_plays = 0
+
+        if self.__gen_files:
+            self.__guess_rates = dict()
+            self.__current_solution = list()
+            self.__solutions = dict()
 
     def __update_score(self, reset=False):
         """
@@ -49,14 +63,31 @@ class WordleServ:
 
         file.close()
 
+    def __gen_solutions_file(self):
+        file = open("solutii.txt", "w")
+
+        for solution in sorted(self.__solutions):
+            file.write(f"{solution}, ")
+            for word in self.__solutions[solution]:
+                file.write(f"{word}, ")
+            file.write("\n")
+
+        file.close()
+
     def __refresh_word(self):
+        if self.__gen_files:
+            self.__guess_rates[self.__secret_answer] = self.__current_score
+            self.__solutions[self.__secret_answer] = self.__current_solution
+            self.__current_solution = list()
+
         # Try to get a new word from repo and set no_more_words accordingly
-        self.__guess_rates[self.__secret_answer] = self.__current_score
         try:
             self.__secret_answer = self.__repo.get_random_word()
         except IndexError:
             self.__no_more_words = True
-            self.__gen_guess_rates_file()
+            if self.__gen_files:
+                self.__gen_guess_rates_file()
+                self.__gen_solutions_file()
 
         # Reset current score and update average score
         self.__update_score(True)
@@ -106,6 +137,9 @@ class WordleServ:
         # Check if a word is present in the repo
         if not self.__repo.check_word(word):
             raise ValueError("Not a word.")
+
+        if self.__gen_files:
+            self.__current_solution.append(word)
 
         # Increase current score
         self.__update_score()
