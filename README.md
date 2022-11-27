@@ -26,8 +26,9 @@ or if you want to play the game yourself use:
 ```bash
   python main.py --human
 ```
-## Extra features
+## Features
 
+- bot for the default repo with IPC
 - GUI and a better wordlist for human players
 - average guess rate of the bot is about 4.37
 
