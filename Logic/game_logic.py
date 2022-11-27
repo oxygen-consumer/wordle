@@ -12,7 +12,7 @@ class WordleServ:
     ):
         """
         Initialize wordle logic with given repo.
-        
+
         If buggy is set to False then the feedback will be generated with the
         buggy free behaviour.
         If gen_files is set to True, the files solutii.txt and guess_rates.txt
