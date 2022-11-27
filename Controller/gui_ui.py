@@ -30,7 +30,7 @@ class GUI(UIInterface):
             LetterColour.YELLOW: "#c8b653",
             LetterColour.GREEN: "#6ca965",
             "WHITE": "#ffffff",
-            "RED":  "#e35b52"
+            "RED": "#e35b52"
         }
         self.__font = pygame.freetype.SysFont("Lucida Console", 64, bold=True)
         self.__score_font = pygame.freetype.SysFont("Lucida Console", 20)
