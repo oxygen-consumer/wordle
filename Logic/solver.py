@@ -7,6 +7,7 @@ import math
 
 class WordleSolver:
     """Creates the solver and get the word list and connect with the queues from the IPC"""
+
     def __init__(
         self,
         word_list: list[str],
