@@ -11,23 +11,20 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description="Wordle Bot")
-    parser.add_argument(
-        "--human",
-        action="store_true",
-        dest='human')
+    parser.add_argument("--human", action="store_true", dest="human")
     parsed_args = parser.parse_args()
 
     if parsed_args.human:
         print("Downloading word list...")
         repo = HumanRepo()
         print("Initializing game...")
-        serv = WordleServ(repo)
+        serv = WordleServ(repo, buggy=False)
         ui = GUI(serv)
     else:
         print("Downloading word list...")
         repo = DefaultRepo()
         print("Initializing game...")
-        serv = WordleServ(repo)
+        serv = WordleServ(repo, gen_files=True)
         print("Starting the bot...")
         bot_handler = BotHandler(repo)
         ui = CLI(serv, bot_handler)
@@ -36,7 +33,8 @@ def main():
     start_time = time.perf_counter()
     ui.run_ui()
     end_time = time.perf_counter()
-    print(f"Finished guessing all the words in {end_time - start_time}s.")
+    if not parsed_args.human:
+        print(f"Finished guessing all the words in {end_time - start_time}s.")
 
 
 if __name__ == "__main__":
